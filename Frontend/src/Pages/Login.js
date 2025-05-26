@@ -1,19 +1,91 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Login.css"; // optional: for styling
+import axios from "axios";
 
 function Login() {
   const [userType, setUserType] = useState("");
   const [choice, setChoice] = useState("");
-  const [LoginSignup, setLoginSignup] = useState(true);
+  const [loginSignup, setLoginSignup] = useState(true);
   const [showTypeButtonDiv, setShowTypeButtonDiv] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleUsername = (value) => {
+    setUsername(value.target.value);
+  }
+  const handlePassword = (value) => {
+    setPassword(value.target.value);
+  }
+  const handleEmail = (value) => {
+    setEmail(value.target.value);
+  }
   // API CALL FUNCTION
+  const handleSubmit = async () => {
+    if(userType === "User"){
+      console.log(username, email, password)
+      try{
+        const res = await axios.post("http://127.0.0.1:8000/register", {
+          "name": username,
+          "email": email,
+          "password": password
+        });
+        console.log("Register success:", res.data);
+      } catch(err) {
+        console.log("Failed", err);
+      }
+    } else {
+      try{
+        const res = await axios.post("ORGANISER API HERE", {
+          "name":username,
+          "email": email,
+          "password":password
+        });
+        console.log("Register success:", res.data);
+      } catch(err) {
+        console.log("Failed", err);
+      }
+    }
+    
+    setUsername("");
+    setEmail("");
+    setPassword("");
+  }
+
+  const handleLogin = async () => {
+    if(userType === "User"){
+      try{
+        const res = await axios.post("http://127.0.0.1:8000/login", {
+          "email": email,
+          "password":password
+        });
+        console.log("Login success:", res.data);
+      } catch(err) {
+        console.log("Failed", err);
+      }
+    } else {
+      try{
+        const res = await axios.post("ORGANISER API HERE", {
+          "email": email,
+          "password":password
+        });
+        console.log("Login success:", res.data);
+      } catch(err) {
+        console.log("Failed", err);
+      }
+    }
+    
+    setUsername("");
+    setEmail("");
+    setPassword("");
+  }
   
 
 
   return (
       <div>
-        {LoginSignup === true &&
+        {loginSignup === true &&
           <div class="user-type">
           <button class="button-login" onClick={() => {setShowTypeButtonDiv(true); setLoginSignup(false); setChoice("Login")}}>Login</button>
           OR
@@ -41,10 +113,10 @@ function Login() {
           <div class="login-main-div">
           <h1>{userType} {choice}</h1>
 
-          <input class="input-details" type="text" placeholder="Username"></input>
-          <input class="input-details" type="text" placeholder="Password"></input>
+          <input class="input-details" type="text" placeholder="Email address" value={email} onChange={handleEmail}></input>
+          <input class="input-details" type="text" placeholder="Password" value={password} onChange={handlePassword}></input>
 
-          <button class="button-login">Submit</button> {/*API LOGIN REQUEST*/}
+          <button class="button-login" onClick={handleLogin}>Submit</button> {/*API LOGIN REQUEST*/}
           <button class="button-login" onClick={() => {setShowTypeButtonDiv(true); setUserType("")}}>Back</button>
           
           </div>
@@ -54,10 +126,11 @@ function Login() {
           <div class="login-main-div">
           <h1>{userType} {choice}</h1>
 
-          <input class="input-details" type="text" placeholder="Username"></input>
-          <input class="input-details" type="text" placeholder="Password"></input>
+          <input class="input-details" type="text" placeholder="Username" value={username} onChange={handleUsername}></input>
+          <input class="input-details" type="text" placeholder="Email address" value={email} onChange={handleEmail}></input>
+          <input class="input-details" type="text" placeholder="Password" value={password} onChange={handlePassword}></input>
 
-          <button class="button-login">Submit</button>  {/*API REGISTER REQUEST*/}
+          <button class="button-login" onClick={handleSubmit}>Submit</button>  {/*API REGISTER REQUEST*/}
           <button class="button-login" onClick={() => {setShowTypeButtonDiv(true); setUserType("")}}>Back</button>
           
           </div>

@@ -7,6 +7,7 @@ from fastapi import Header
 import uuid
 from fastapi import FastAPI, HTTPException, Response, Cookie, Depends
 import uuid
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 # Use absolute path to avoid DB path confusion
@@ -14,6 +15,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, "Database.db")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],            # or ["*"] to allow all (not safe for production)
+    allow_credentials=True,
+    allow_methods=["*"],              # or specify ["GET", "POST", etc."]
+    allow_headers=["*"],              # or specify ["Authorization", "Content-Type"]
+)
 
 def get_db():
     conn = sqlite3.connect(DATABASE, timeout=10)
