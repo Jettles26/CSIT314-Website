@@ -26,23 +26,23 @@ function Login() {
     if(userType === "User"){
       console.log(username, email, password)
       try{
-        const res = await axios.post("http://127.0.0.1:8000/register", {
+        const res = await axios.post("http://127.0.0.1:8000/registerCustomer", {
           "name": username,
           "email": email,
           "password": password
         });
-        console.log("Register success:", res.data);
+        console.log("Customer register success:", res.data);
       } catch(err) {
         console.log("Failed", err);
       }
     } else {
       try{
-        const res = await axios.post("ORGANISER API HERE", {
+        const res = await axios.post("http://127.0.0.1:8000/registerAdmin", {
           "name":username,
           "email": email,
           "password":password
         });
-        console.log("Register success:", res.data);
+        console.log("Admin register success:", res.data);
       } catch(err) {
         console.log("Failed", err);
       }
@@ -56,21 +56,21 @@ function Login() {
   const handleLogin = async () => {
     if(userType === "User"){
       try{
-        const res = await axios.post("http://127.0.0.1:8000/login", {
+        const res = await axios.post("http://127.0.0.1:8000/loginCustomer", {
           "email": email,
           "password":password
         });
-        console.log("Login success:", res.data);
+        console.log("Customer Login success:", res.data);
       } catch(err) {
         console.log("Failed", err);
       }
     } else {
       try{
-        const res = await axios.post("ORGANISER API HERE", {
+        const res = await axios.post("http://127.0.0.1:8000/loginAdmin", {
           "email": email,
           "password":password
         });
-        console.log("Login success:", res.data);
+        console.log("Admin Login success:", res.data);
       } catch(err) {
         console.log("Failed", err);
       }
