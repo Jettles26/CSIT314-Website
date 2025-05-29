@@ -6,7 +6,7 @@ function Login() {
   return (
 
       <div>
-        <h1>We are going to need a login feature, eh.</h1>
+        <h1>We are going to need a login feature, eh!</h1>
       </div>
   );
 }
