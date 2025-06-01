@@ -7,10 +7,10 @@ function Event({event}) {
       <a href={event.url}>
       <img src={event.imageUrl} alt={event.name} className={"img"}/>
         <div>
-          <h3>{event.name}</h3>
+          <h3>{event.Name}</h3>
           <div className="DateTime">
-            <p>{event.date}</p>
-            <p>{`${event.timeStart}  -  ${event.timeEnd}`}</p>
+            <p>{event.Date}</p>
+            {/* <p>{`${event.timeStart}  -  ${event.timeEnd}`}</p> */}
           </div>
         </div>
       </a>
