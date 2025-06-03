@@ -49,10 +49,12 @@ init_db()  # Create table if not exists on startup
 # Pydantic models
 class CreateEvent(BaseModel):
     name: str
-    date: str   # Format: "YYYY-MM-DD"
-    time: str   # Format: "HH:MM"
+    date: str
+    time: str
     location: str
-
+    quantity: int  # NEW
+    description: str
+    vip: int
 
 class LoginAdmin(BaseModel):
     email: EmailStr
@@ -183,24 +185,19 @@ def change_password(data: ChangePassword):
 def get_events():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT EventID, Name, Date, Time, Location, Availability FROM Event")
+    cursor.execute("SELECT EventID, Name, Quantity, Date, Time, Location, Availability, Details, Vip FROM Event")
     rows = cursor.fetchall()
     conn.close()
-
-    # Convert rows (sqlite3.Row) to list of dicts
-    events = [dict(row) for row in rows]
-    return {"events": events}
+    return {"events": [dict(row) for row in rows]}
 
 @app.get("/all_GetAvailable")
 def get_available():
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT EventID, Name, Date, Time, Location, Availability FROM Event WHERE Availability = 'Available'")
+    cursor.execute("SELECT EventID, Name, Quantity, Date, Time, Location, Availability, Details, Vip FROM Event WHERE Availability = 'Available'")
     rows = cursor.fetchall()
     conn.close()
-    events = [dict(row) for row in rows]
-    return {"available_events": events}
-
+    return {"available_events": [dict(row) for row in rows]}
 
 
 
@@ -214,9 +211,10 @@ def purchase_event(purchase: PurchaseRequest, user=Depends(get_current_user)):
     conn = get_db()
     cursor = conn.cursor()
 
-    # Check if event exists and is available
-    cursor.execute("SELECT Availability FROM Event WHERE EventID = ?", (purchase.event_id,))
+    # Check current quantity and availability
+    cursor.execute("SELECT Quantity, Availability FROM Event WHERE EventID = ?", (purchase.event_id,))
     event = cursor.fetchone()
+
     if not event:
         conn.close()
         raise HTTPException(status_code=404, detail="Event not found")
@@ -225,19 +223,31 @@ def purchase_event(purchase: PurchaseRequest, user=Depends(get_current_user)):
         conn.close()
         raise HTTPException(status_code=400, detail="Event is not available for purchase")
 
-    # Update event availability to "Purchased"
-    cursor.execute("UPDATE Event SET Availability = 'Purchased' WHERE EventID = ?", (purchase.event_id,))
+    if event["Quantity"] <= 0:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Tickets sold out")
 
-    # Insert purchase record with status "Pending"
-    cursor.execute(
-        "INSERT INTO Purchased (CustomerID, EventID, Status) VALUES (?, ?, ?)",
-        (customer_id, purchase.event_id, "Pending")
-    )
+    # Decrease quantity
+    new_quantity = event["Quantity"] - 1
+
+    # Update quantity, possibly availability
+    if new_quantity == 0:
+        cursor.execute("""
+            UPDATE Event SET Quantity = 0, Availability = 'Purchased' WHERE EventID = ?
+        """, (purchase.event_id,))
+    else:
+        cursor.execute("UPDATE Event SET Quantity = ? WHERE EventID = ?", (new_quantity, purchase.event_id))
+
+    # Insert into Purchased table
+    cursor.execute("""
+        INSERT INTO Purchased (CustomerID, EventID, Status)
+        VALUES (?, ?, ?)
+    """, (customer_id, purchase.event_id, "Pending"))
 
     conn.commit()
     conn.close()
 
-    return {"message": "Purchase successful, status set to Pending"}
+    return {"message": "Purchase successful Thank you"}
 
 
 @app.get("/customer_My_purchases")
@@ -247,7 +257,7 @@ def show_user_purchases(user=Depends(get_current_user)):
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT Event.EventID, Event.Name, Event.Date, Event.Time, Event.Location, Purchased.Status
+        SELECT Event.EventID, Event.Name, Event.Date, Event.Time, Event.Location, Event.Details, Event.Vip, Purchased.Status
         FROM Event
         JOIN Purchased ON Event.EventID = Purchased.EventID
         WHERE Purchased.CustomerID = ?
@@ -257,6 +267,8 @@ def show_user_purchases(user=Depends(get_current_user)):
 
     events = [dict(row) for row in rows]
     return {"my_purchases": events}
+
+
 
 
 @app.get("/admin_All_purchases")
@@ -273,6 +285,8 @@ def get_all_purchases():
             Event.Date,
             Event.Time,
             Event.Location,
+            Event.Details,
+            Event.Vip,
             Purchased.Status
         FROM Purchased
         JOIN Customer ON Purchased.CustomerID = Customer.UserID
@@ -401,15 +415,16 @@ def add_event(event: CreateEvent, admin=Depends(get_current_admin)):
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO Event (Name, Date, Time, Location, Availability)
-        VALUES (?, ?, ?, ?, ?)
-    """, (event.name, event.date, event.time, event.location, "Available"))
+        INSERT INTO Event (Name, Quantity, Date, Time, Location, Availability, Details, Vip)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (event.name, event.quantity, event.date, event.time, event.location, "Available", event.description, event.vip))
 
     conn.commit()
     event_id = cursor.lastrowid
     conn.close()
 
     return {"message": "Event added successfully", "EventID": event_id}
+
 
 @app.post("/admin_DeleteEvent")
 def delete_event(request: DeleteEventRequest, admin=Depends(get_current_admin)):
@@ -430,3 +445,29 @@ def delete_event(request: DeleteEventRequest, admin=Depends(get_current_admin)):
     conn.close()
 
     return {"message": f"Event ID {request.event_id} has been deleted successfully"}
+
+
+from pydantic import BaseModel
+
+class UpdateDescriptionRequest(BaseModel):
+    event_id: int
+    new_description: str
+
+@app.put("/admin_updateDescription")
+def update_event_description(data: UpdateDescriptionRequest, admin=Depends(get_current_admin)):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Check if the event exists
+    cursor.execute("SELECT * FROM Event WHERE EventID = ?", (data.event_id,))
+    event = cursor.fetchone()
+    if not event:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Event not found.")
+
+    # Update the description
+    cursor.execute("UPDATE Event SET Details = ? WHERE EventID = ?", (data.new_description, data.event_id))
+    conn.commit()
+    conn.close()
+
+    return {"message": f"Description for EventID {data.event_id} updated successfully."}

@@ -79,12 +79,25 @@ a {
   text-decoration: none;
 }
 
-.DateTime {
+.DateTime{
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-left: 15px;
   margin-right: 15px;
+  margin-bottom: 15px;
+}
+
+.Checkbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 h3 {
