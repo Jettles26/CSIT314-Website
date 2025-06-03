@@ -25,6 +25,7 @@ jobs:
           CI: false
         run: |
           npm install
+          npm install axios
           npm run build
 
       - name: Set up Python
