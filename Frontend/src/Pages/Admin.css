@@ -1,0 +1,181 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+  
+  .Subtitle {
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+    padding-top: 30px;
+    padding-left: 30px;
+  }
+  
+  .Title {
+    background-color: cornflowerblue;
+    color: #FFFFFF;
+    -webkit-text-stroke: 0.5px gold;
+    text-align: center;
+    height: 70px;
+    box-sizing: border-box;
+    line-height: 70px; /* Align text vertically */
+    flex: 1;
+    display: flex;
+    align-items: center; /* Center text vertically */
+    justify-content: center; /* Center text horizontally */
+  }
+  
+  .TitleContainer {
+    display: flex;
+    justify-content: space-around; /* Center the subtitles */
+    border-bottom: 1.5px solid black;
+    box-shadow: 2px 2px 5px black ;
+  }
+  
+  .Link {
+    color: whitesmoke;
+    text-decoration: none;
+  }
+  
+  footer {
+    height: 50px;
+    background-color: #27293A;
+    color: whitesmoke;
+    width: 100%;
+    margin-top: auto;
+    text-align: center;
+  }
+  
+  .eventList {
+    padding-left: 65px;
+    padding-bottom: 30px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .event {
+    border-radius: 25px;
+    border: 1.5px solid black;
+  }
+  
+  .img {
+    border-radius: 25px 25px 0px 0px;
+    width: 280px;
+    height: 140px;
+  }
+  
+  a {
+    color: black;
+    text-decoration: none;
+  }
+  
+  .DateTime{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .Checkbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .Button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  h3 {
+    margin-left: 10px;
+    margin-bottom: 0px;
+  }
+
+  .DeleteButton {
+    background-color: red;
+    border-radius: 10px;
+    border-color: red;
+    color: white;
+  }
+
+  #DeleteAlign{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* dark background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  .popup-form {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  .popup-form h3 {
+    margin-bottom: 16px;
+  }
+  
+  .popup-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .popup-form input,
+  .popup-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .button-group button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .button-group button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .button-group button[type="button"] {
+    background-color: #ccc;
+    color: black;
+  }  

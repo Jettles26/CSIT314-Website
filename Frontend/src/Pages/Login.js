@@ -59,6 +59,8 @@ function Login() {
         const res = await axios.post("http://127.0.0.1:8000/loginCustomer", {
           "email": email,
           "password":password
+        }, {
+          withCredentials: true
         });
         console.log("Customer Login success:", res.data);
       } catch(err) {
@@ -69,6 +71,8 @@ function Login() {
         const res = await axios.post("http://127.0.0.1:8000/loginAdmin", {
           "email": email,
           "password":password
+        }, {
+          withCredentials: true
         });
         console.log("Admin Login success:", res.data);
       } catch(err) {

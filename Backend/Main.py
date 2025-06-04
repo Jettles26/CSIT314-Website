@@ -346,7 +346,7 @@ def login_admin(admin: LoginAdmin, response: Response, request: Request):
         "Email": row["Email"]
     }
 
-    response.set_cookie(key="session_token", value=token, httponly=True)
+    response.set_cookie(key="session_token", value=token, httponly=True,  samesite="none", secure=True )
 
     return {"message": f"Welcome, Admin {row['Name']}!"}
 

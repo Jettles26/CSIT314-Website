@@ -11,6 +11,7 @@ import Notify from "./Pages/Notify";
 import Login from "./Pages/Login";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
+import Admin from "./Pages/Admin";
 
 function App() {
     return (
@@ -37,6 +38,10 @@ function App() {
                     <Route
                         path="*"
                         element={<Navigate to="/" />}
+                    />
+                    <Route 
+                        path="/Admin"
+                        element={<Admin />}
                     />
                 </Routes>
                 <Footer />
