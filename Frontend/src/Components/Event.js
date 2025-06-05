@@ -5,6 +5,7 @@ import "./Checkbox";
 import Checkbox from "./Checkbox";
 import "./Button";
 import Button from "./Button";
+import axios from "axios";
 
 function Event({event}) {
 
@@ -14,6 +15,22 @@ function Event({event}) {
   const handleCheckboxToggle = (checked) => {
     setMoney((prevMoney) => prevMoney + (checked ? pricePerVIP : -pricePerVIP));
   };
+
+  const purchase = async (eventId) => {
+    try{
+      const res = await axios.post("http://127.0.0.1:8000/customer_Purchase", {
+        "event_id":parseInt(eventId)
+      },
+      {
+        withCredentials: true
+      });
+      alert("Purchase success");
+    } catch(err) {
+      alert("Failed");
+      console.log("Failed", err);
+    }
+     
+  }
   
 
 
@@ -30,7 +47,12 @@ function Event({event}) {
         <div className="DateTime">
           <Checkbox onToggle={handleCheckboxToggle}></Checkbox>
           <p>Price: ${money}</p>
-          <Button></Button>
+          {
+            event.Availability === "Available" &&
+            <button onClick={() => purchase(event.EventID)}>PURCHASE</button>
+          }
+          
+        
         </div>
     </div>
   );

@@ -69,7 +69,7 @@ function Events() {
         console.log("Error fetching event data:", error);
       })
     }, []);
-  
+    
 
   return (
     <div>

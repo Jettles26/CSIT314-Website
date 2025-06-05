@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Login.css"; // optional: for styling
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [userType, setUserType] = useState("");
@@ -11,6 +12,17 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+
+  const navigate = useNavigate();
+  const handleRedirect = (userType) => {
+    if(userType === "User"){
+      navigate("/Events");
+    } else {
+      navigate("/admin");
+    }
+    
+  }
+  
 
   const handleUsername = (value) => {
     setUsername(value.target.value);
@@ -31,7 +43,8 @@ function Login() {
           "email": email,
           "password": password
         });
-        console.log("Customer register success:", res.data);
+        alert("Customer register success");
+        window.location.reload();
       } catch(err) {
         console.log("Failed", err);
       }
@@ -42,7 +55,8 @@ function Login() {
           "email": email,
           "password":password
         });
-        console.log("Admin register success:", res.data);
+        alert("Admin register success");
+        window.location.reload();
       } catch(err) {
         console.log("Failed", err);
       }
@@ -62,7 +76,8 @@ function Login() {
         }, {
           withCredentials: true
         });
-        console.log("Customer Login success:", res.data);
+        alert("Customer login success");
+        handleRedirect(userType);
       } catch(err) {
         console.log("Failed", err);
       }
@@ -74,7 +89,8 @@ function Login() {
         }, {
           withCredentials: true
         });
-        console.log("Admin Login success:", res.data);
+        alert("Admin Login success")
+        handleRedirect(userType);
       } catch(err) {
         console.log("Failed", err);
       }

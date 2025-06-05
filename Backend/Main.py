@@ -19,7 +19,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],            # or ["*"] to allow all (not safe for production)
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],            # or ["*"] to allow all (not safe for production)
     allow_credentials=True,
     allow_methods=["*"],              # or specify ["GET", "POST", etc."]
     allow_headers=["*"],              # or specify ["Authorization", "Content-Type"]
@@ -133,7 +133,7 @@ def login(user: LoginUser, response: Response, request: Request):
     logged_in_users[token] = {"UserID": row["UserID"], "Name": row["Name"], "Email": row["Email"]}
 
     # Set token in HTTP-only cookie
-    response.set_cookie(key="session_token", value=token, httponly=True)
+    response.set_cookie(key="session_token", value=token, httponly=True, samesite="none", secure=True)
 
     return {"message": f"Welcome back, {row['Name']}!"}
 
