@@ -53,7 +53,7 @@ function Event({event}) {
           <p>Price: ${money}</p>
           {
             event.Availability === "Available" &&
-            <button onClick={() => purchase(event.EventID)}>PURCHASE</button>
+            <button onClick={() => purchase(event.EventID)}>Purchase</button>
           }
           
         
