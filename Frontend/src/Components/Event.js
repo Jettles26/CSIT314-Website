@@ -52,8 +52,11 @@ function Event({event}) {
           <Checkbox onToggle={handleCheckboxToggle}></Checkbox>
           <p>Price: ${money}</p>
           {
-            event.Availability === "Available" &&
+            event.Availability === "Available" ? (
             <button onClick={() => purchase(event.EventID)}>Purchase</button>
+            ) : (
+              "SOLD OUT"
+            )
           }
           
         
