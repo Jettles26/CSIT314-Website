@@ -6,9 +6,11 @@ import Checkbox from "./Checkbox";
 import "./Button";
 import Button from "./Button";
 import axios from "axios";
+import Alert from "../Components/Alert";
 
 function Event({event}) {
-
+  const [alertMsg, setAlertMsg] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
   const [money, setMoney] = useState(25);
   const pricePerVIP = 15;
 
@@ -24,7 +26,8 @@ function Event({event}) {
       {
         withCredentials: true
       });
-      alert("Purchase success");
+      setAlertMsg(`Successfully reserved ticket!`);
+      setShowAlert(true);
     } catch(err) {
       alert("Failed");
       console.log("Failed", err);
@@ -32,6 +35,13 @@ function Event({event}) {
      
   }
   
+  {showAlert && (
+          <Alert
+            message={alertMsg}
+            duration={3000}
+            onClose={() => setShowAlert(false)}
+          />
+  )}
 
 
   return (

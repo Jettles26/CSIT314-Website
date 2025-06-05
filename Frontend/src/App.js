@@ -12,6 +12,7 @@ import Login from "./Pages/Login";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Admin from "./Pages/Admin";
+import LogoutButton from "./Components/Logout"
 
 function App() {
     return (
@@ -44,6 +45,7 @@ function App() {
                         element={<Admin />}
                     />
                 </Routes>
+                <LogoutButton/>
                 <Footer />
             </Router>
     );

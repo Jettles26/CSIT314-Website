@@ -61,7 +61,7 @@ function Admin(){
           await axios.post("http://127.0.0.1:8000/admin_AddEvent", parsedData, {
             withCredentials: true, // sends the session_token cookie
           });
-          alert("Form submitted successfully!");
+          alert("Event added successfully!");
           window.location.reload();
           togglePopup();
         } catch (error) {
@@ -79,7 +79,7 @@ function Admin(){
                 {
                 withCredentials: true, // ensure session_token is sent
                 });
-            alert("Event deleted successfully.");
+            alert("Event deleted successfully and refunds are now processing.");
             window.location.reload();
           } catch (error) {
             console.error("Error deleting event:", error);
@@ -106,7 +106,7 @@ function Admin(){
         ))}
       </div>
     
-      <button onClick={togglePopup}>ADD EVENT</button>
+      <button class="genre-button" onClick={togglePopup}>ADD EVENT</button>
 
       {/* Event List */}
       <div className="eventList">
