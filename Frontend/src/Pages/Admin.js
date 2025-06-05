@@ -5,7 +5,7 @@ import axios from "axios";
 
 function Admin(){
 
-    const [selectedGenre, setSelectedGenre] = useState("All");
+  const [selectedGenre, setSelectedGenre] = useState("All");
   const [eventList, setEventList] = useState([]);
 
   // Extract unique genres for filter buttons
@@ -59,7 +59,7 @@ function Admin(){
         e.preventDefault();
         try {
           await axios.post("http://127.0.0.1:8000/admin_AddEvent", parsedData, {
-            withCredentials: true, // sends the session_token cookie
+            withCredentials: true,
           });
           alert("Event added successfully!");
           window.location.reload();

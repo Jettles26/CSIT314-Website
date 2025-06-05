@@ -63,6 +63,7 @@ function Events() {
     useEffect(() => {
       axios.get("http://127.0.0.1:8000/all_Events")
       .then(response => {
+        console.log(response.data.events)
         setEventList(response.data.events);  
       })
       .catch(error => {

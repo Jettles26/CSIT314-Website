@@ -12,6 +12,17 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [showRecover, setshowRecover] = useState(false);
+  const [old_password, set_old_password] = useState("");
+  const [new_password, set_new_password] = useState("");
+  const [formData, setFormData] = useState({
+          "email":"",
+          "old_password":"",
+          "new_password":""
+  });
+  const [isOpen, setIsOpen] = useState(false);
+  const togglePopup = () => setIsOpen(!isOpen);
+
 
   const navigate = useNavigate();
   const handleRedirect = (userType) => {
@@ -95,12 +106,37 @@ function Login() {
         alert("Incorrect Email or Password")
       }
     }
-    
+
     setUsername("");
     setEmail("");
     setPassword("");
   }
   
+  const passwordRecover = async (e) => {
+    const parsedData = {
+      ...formData
+    };
+    console.log(parsedData);
+
+    e.preventDefault();
+    try{
+      const res = await axios.post("http://127.0.0.1:8000/change-password-admin", parsedData,{
+        withCredentials: true
+      });
+      alert("Password successfully changed");
+      window.location.reload();
+    } catch(err) {
+      alert(err)
+    }
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+    }));
+  } 
 
 
   return (
@@ -138,7 +174,7 @@ function Login() {
 
           <button class="button-login" onClick={handleLogin}>Submit</button> {/*API LOGIN REQUEST*/}
           <button class="button-login" onClick={() => {setShowTypeButtonDiv(true); setUserType("")}}>Back</button>
-          
+          <button class="button-login" onClick={togglePopup}>Password recovery</button>
           </div>
         )}
 
@@ -153,6 +189,36 @@ function Login() {
           <button class="button-login" onClick={handleSubmit}>Submit</button>  {/*API REGISTER REQUEST*/}
           <button class="button-login" onClick={() => {setShowTypeButtonDiv(true); setUserType("")}}>Back</button>
           
+          </div>
+        )}
+
+        {isOpen &&(
+          <div className="popup-overlay">
+            <div className="popup-form">
+            <form onSubmit={passwordRecover}>
+              <h3>Enter New Password Details</h3>
+
+              <label>
+                Email:
+                <input type="text" name="email" value={formData.email} onChange={handleChange} required />
+              </label>
+
+              <label>
+                Old password:
+                <input type="text" name="old_password" value={formData.old_password} onChange={handleChange} required />
+              </label>
+
+              <label>
+                New password:
+                <input type="text" name="new_password" value={formData.new_password} onChange={handleChange} required />
+              </label>
+
+              <div className="button-group">
+                <button type="submit">Submit</button>
+                <button type="button" onClick={togglePopup}>Cancel</button>
+              </div>
+            </form>
+            </div>
           </div>
         )}
         

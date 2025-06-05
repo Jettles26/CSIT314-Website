@@ -22,15 +22,17 @@ function Event({event}) {
       <img src={"https://www.visitsealife.com/sydney/media/f4webh41/hero-image.png"} alt={event.Name} className={"img"}/>
         <div>
           <h3>{event.Name}</h3>
+            <p>&nbsp;&nbsp; Tickets left: {event.Quantity}</p>
           <div className="DateTime">
             <p>{event.Date}</p>
             <p>{event.Location}</p>
+            <p>Time: {event.Time}</p>
           </div>
         </div>
         <div className="DateTime">
           <Checkbox onToggle={handleCheckboxToggle}></Checkbox>
           <p>Price: ${money}</p>
-          <Button></Button>
+          
         </div>
     </div>
   );
