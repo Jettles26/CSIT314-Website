@@ -46,7 +46,7 @@ function Login() {
         alert("Customer register success");
         window.location.reload();
       } catch(err) {
-        console.log("Failed", err);
+        alert("Failed to register")
       }
     } else {
       try{
@@ -58,7 +58,7 @@ function Login() {
         alert("Admin register success");
         window.location.reload();
       } catch(err) {
-        console.log("Failed", err);
+        alert("Failed to register")
       }
     }
     
@@ -79,7 +79,7 @@ function Login() {
         alert("Customer login success");
         handleRedirect(userType);
       } catch(err) {
-        console.log("Failed", err);
+        alert("Incorrect Email or Password")
       }
     } else {
       try{
@@ -92,7 +92,7 @@ function Login() {
         alert("Admin Login success")
         handleRedirect(userType);
       } catch(err) {
-        console.log("Failed", err);
+        alert("Incorrect Email or Password")
       }
     }
     

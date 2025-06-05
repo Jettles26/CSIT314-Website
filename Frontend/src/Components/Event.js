@@ -26,7 +26,7 @@ function Event({event}) {
       {
         withCredentials: true
       });
-      setAlertMsg(`Successfully reserved ticket!`);
+      setAlertMsg(`Successfully purchased ticket!`);
       setShowAlert(true);
     } catch(err) {
       alert("Failed");
@@ -35,13 +35,7 @@ function Event({event}) {
      
   }
   
-  {showAlert && (
-          <Alert
-            message={alertMsg}
-            duration={3000}
-            onClose={() => setShowAlert(false)}
-          />
-  )}
+ 
 
 
   return (
@@ -64,6 +58,14 @@ function Event({event}) {
           
         
         </div>
+
+        {showAlert && (
+          <Alert
+            message={alertMsg}
+            duration={3000}
+            onClose={() => setShowAlert(false)}
+          />
+        )}
     </div>
   );
 }

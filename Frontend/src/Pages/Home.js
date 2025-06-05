@@ -77,7 +77,7 @@ import axios from "axios";
 
 
 function Home() {
-  const [userEvents, setUserEvents] = useState(["1"]);
+  const [userEvents, setUserEvents] = useState([]);
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/customer_My_purchases",{
       withCredentials: true
