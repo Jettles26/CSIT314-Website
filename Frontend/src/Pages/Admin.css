@@ -118,6 +118,19 @@ body {
     align-items: center;
   }
 
+  .EditButton {
+    background-color: rgb(0, 72, 255);
+    border-radius: 10px;
+    border-color: rgb(0, 72, 255);
+    color: white;
+  }
+
+  #EditAlign{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .popup-overlay {
     position: fixed;
     top: 0;

@@ -27,18 +27,35 @@ function Admin(){
     }, []);
 
     const [isOpen, setIsOpen] = useState(false);
+    const [isOpenEdit, setIsOpenEdit] = useState(false);
+
     const [formData, setFormData] = useState({
         name: "",
         quantity: "",
         date: "",
         time: "",
         location: "",
-        description: "",
+        details: "",
         vip: ""
     });
     
 
     const togglePopup = () => setIsOpen(!isOpen);
+    const togglePopupEdit = (eventItem) => {
+      setFormData({
+        event_id:eventItem.EventID,
+        
+        name: eventItem.Name,
+        quantity: eventItem.Quantity,
+        date: eventItem.Date,
+        time: eventItem.Time,
+        location: eventItem.Location,
+        availability:eventItem.Availability,
+        details: eventItem.Details,
+        vip: eventItem.Vip
+      })
+      setIsOpenEdit(!isOpenEdit);
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -64,6 +81,28 @@ function Admin(){
           alert("Event added successfully!");
           window.location.reload();
           togglePopup();
+        } catch (error) {
+          console.error("Submission error:", error);
+          alert("Something went wrong.");
+        }
+      };
+
+      const handleEdit = async (e) => {
+        const parsedData = {
+            ...formData,
+            quantity: parseInt(formData.quantity, 10),
+            vip: parseInt(formData.vip, 10),
+        };
+        console.log(parsedData);
+
+        e.preventDefault();
+        try {
+          await axios.put("http://127.0.0.1:8000/admin_updateEvent", parsedData, {
+            withCredentials: true,
+          });
+          alert("Event edited successfully!");
+          window.location.reload();
+          togglePopupEdit();
         } catch (error) {
           console.error("Submission error:", error);
           alert("Something went wrong.");
@@ -107,6 +146,7 @@ function Admin(){
       </div>
     
       <button class="genre-button" onClick={togglePopup}>ADD EVENT</button>
+      
 
       {/* Event List */}
       <div className="eventList">
@@ -114,6 +154,7 @@ function Admin(){
         {filteredEvents.map((eventItem) => (
             <div>
                 <div id="DeleteAlign">
+                    <button class="EditButton" onClick={() => togglePopupEdit(eventItem)}>EDIT EVENT</button>
                     <button class="DeleteButton" onClick={() => handleDelete(eventItem.EventID)}>DELETE</button>
                 </div>
                 
@@ -156,7 +197,7 @@ function Admin(){
 
               <label>
                 Description:
-                <textarea name="description" value={formData.description} onChange={handleChange} required />
+                <textarea name="details" value={formData.details} onChange={handleChange} required />
               </label>
 
               <label>
@@ -167,6 +208,56 @@ function Admin(){
               <div className="button-group">
                 <button type="submit">Submit</button>
                 <button type="button" onClick={togglePopup}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    {isOpenEdit && (
+        <div className="popup-overlay">
+          <div className="popup-form">
+            <form onSubmit={handleEdit}>
+              <h3>Edit Item Details</h3>
+
+              <label>
+                Name:
+                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+              </label>
+
+              <label>
+                Quantity:
+                <input type="text" name="quantity" value={formData.quantity} onChange={handleChange} required />
+              </label>
+
+              <label>
+                Date:
+                <input type="date" name="date" value={formData.date} onChange={handleChange} required />
+              </label>
+
+              <label>
+                Time:
+                <input type="text" name="time" value={formData.time} onChange={handleChange} required />
+              </label>
+
+              <label>
+                Location:
+                <input type="text" name="location" value={formData.location} onChange={handleChange} required />
+              </label>
+
+              <label>
+                Description:
+                <textarea name="details" value={formData.details} onChange={handleChange} required />
+              </label>
+
+              <label>
+                Vip (0 for NO, 1 for YES):
+                <input type="text" name="vip" value={formData.vip} onChange={handleChange} required />
+              </label>
+
+              <div className="button-group">
+                <button type="submit">Submit</button>
+                <button type="button" onClick={togglePopupEdit}>Cancel</button>
               </div>
             </form>
           </div>

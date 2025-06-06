@@ -8,6 +8,7 @@ import uuid
 from fastapi import FastAPI, HTTPException, Response, Cookie, Depends
 import uuid
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 app = FastAPI()
 
 from fastapi import Request  # add this if not imported yet
@@ -53,7 +54,7 @@ class CreateEvent(BaseModel):
     time: str
     location: str
     quantity: int  # NEW
-    description: str
+    details: str
     vip: int
 
 class LoginAdmin(BaseModel):
@@ -417,7 +418,7 @@ def add_event(event: CreateEvent, admin=Depends(get_current_admin)):
     cursor.execute("""
         INSERT INTO Event (Name, Quantity, Date, Time, Location, Availability, Details, Vip)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """, (event.name, event.quantity, event.date, event.time, event.location, "Available", event.description, event.vip))
+    """, (event.name, event.quantity, event.date, event.time, event.location, "Available", event.details, event.vip))
 
     conn.commit()
     event_id = cursor.lastrowid
@@ -471,3 +472,78 @@ def update_event_description(data: UpdateDescriptionRequest, admin=Depends(get_c
     conn.close()
 
     return {"message": f"Description for EventID {data.event_id} updated successfully."}
+
+from pydantic import BaseModel
+
+class UpdateEventRequest(BaseModel):
+    event_id: int
+    name: str
+    quantity: int
+    date: str
+    time: str
+    location: str
+    availability: str
+    details: str
+    vip: int
+
+
+@app.put("/admin_updateEvent")
+def update_event(data: UpdateEventRequest, admin=Depends(get_current_admin)):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Check if event exists
+    cursor.execute("SELECT * FROM Event WHERE EventID = ?", (data.event_id,))
+    event = cursor.fetchone()
+    if not event:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Event not found.")
+
+    # Store current attributes before update
+    columns = ["event_id", "name", "quantity", "date", "time", "location", "availability", "details", "vip"]
+    current_event = dict(zip(columns, event))
+
+    # Build dynamic update query
+    update_fields = []
+    update_values = []
+
+    if data.name is not None:
+        update_fields.append("Name = ?")
+        update_values.append(data.name)
+    if data.quantity is not None:
+        update_fields.append("Quantity = ?")
+        update_values.append(data.quantity)
+    if data.date is not None:
+        update_fields.append("Date = ?")
+        update_values.append(data.date)
+    if data.time is not None:
+        update_fields.append("Time = ?")
+        update_values.append(data.time)
+    if data.location is not None:
+        update_fields.append("Location = ?")
+        update_values.append(data.location)
+    if data.availability is not None:
+        update_fields.append("Availability = ?")
+        update_values.append(data.availability)
+    if data.details is not None:
+        update_fields.append("Details = ?")
+        update_values.append(data.details)
+    if data.vip is not None:
+        update_fields.append("Vip = ?")
+        update_values.append(data.vip)
+
+    if not update_fields:
+        conn.close()
+        raise HTTPException(status_code=400, detail="No fields provided to update.")
+
+    update_query = f"UPDATE Event SET {', '.join(update_fields)} WHERE EventID = ?"
+    update_values.append(data.event_id)
+
+    cursor.execute(update_query, tuple(update_values))
+    conn.commit()
+    conn.close()
+
+    return {
+        "message": f"EventID {data.event_id} updated successfully.",
+        "previous_values": current_event
+    }
